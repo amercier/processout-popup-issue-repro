@@ -3,7 +3,7 @@
     <h1>Payment page</h1>
 
     <p>
-      Public key: <code>{{ processOutPublicKey }}</code>
+      ProcessOut public key: <code>{{ processOutPublicKey }}</code>
     </p>
 
     <p>
@@ -28,7 +28,6 @@
           </legend>
 
           <div v-if="isPaymentMethodSelected(paymentMethod)">
-            <!-- Each adapter is a <form> -->
             <component
               :is="paymentMethod.adapter"
               :form-id="paymentMethod.id"
@@ -90,6 +89,10 @@ export default {
   },
 
   computed: {
+    /**
+     * Provider-agnostic payment method list. Each adapter is a Vue compoent,
+     * that is a <form id="formId">.
+     */
     paymentMethods() {
       return [
         {
@@ -103,7 +106,21 @@ export default {
           label: 'PayPal',
           adapter: ProcessOutAlternatePaymentMethod,
           clientOptions: {
+            // ProcessOut project ID (aka "public key")
             publicKey: this.processOutPublicKey,
+
+            // Name of the gateway, used to find the correct gateway after
+            // having fetched them during the submit process.
+            gatewayName: 'paypal-rest'
+          },
+        },
+        {
+          id: 'processout-sandbox',
+          label: 'ProcessOut sandbox',
+          adapter: ProcessOutAlternatePaymentMethod,
+          clientOptions: {
+            publicKey: this.processOutPublicKey,
+            gatewayName: 'sandbox'
           },
         },
       ]
@@ -146,9 +163,14 @@ export default {
     },
 
     handleAdapterSubmitError(error) {
-      console.error('❌ SUBMIT ERROR', error)
+      console.error('❌ SUBMIT ERROR', error, { ...error })
       this.isSubmitting = false
-      this.submitResult = [error.message, error.stack].join('\n')
+      this.submitResult = [
+        error.message,
+        error.stack,
+        '',
+        ...Object.entries({ ...error }).map(([key, value]) => `${key}: ${value}`)
+      ].join('\n')
     },
   },
 }
