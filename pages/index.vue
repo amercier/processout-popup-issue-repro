@@ -5,7 +5,7 @@
     <form @submit.prevent="handleSubmit">
       <label>
         ProcessOut project's public key:
-        <input autofocus v-model="publicKey" required />
+        <input autofocus v-model="processOutPublicKey" required />
       </label>
 
       <p>
@@ -19,7 +19,7 @@
 export default {
   data() {
     return {
-      publicKey: '',
+      processOutPublicKey: '',
     }
   },
 
@@ -28,7 +28,7 @@ export default {
       this.$router.push({
         path: '/payment',
         query: {
-          publicKey: this.publicKey,
+          processOutPublicKey: this.processOutPublicKey,
         },
       })
     },
