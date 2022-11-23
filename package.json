@@ -8,10 +8,9 @@
     "dev": "MINIMAL=1 nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate",
-    "post-update": "yarn upgrade --latest"
+    "generate": "nuxt generate"
   },
   "dependencies": {
-    "nuxt": "^2.15.0"
+    "nuxt": "^2.15.8"
   }
 }
